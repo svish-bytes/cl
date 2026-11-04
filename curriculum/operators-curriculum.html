@@ -1,0 +1,724 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>The Operator's Curriculum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,200;1,300&display=block" rel="stylesheet">
+<style>@page { size: A4; margin: 0; }
+:root{
+  --stock: oklch(0.972 0.003 250);      /* true off-white, no warm cast */
+  --ink: oklch(0.21 0.012 255);         /* off-black, never #000 */
+  --ink-2: oklch(0.38 0.012 255);       /* secondary text, >7:1 on stock */
+  --rule: oklch(0.80 0.006 255);
+  --biz: oklch(0.55 0.165 31);          /* riso red */
+  --brand: oklch(0.46 0.12 258);        /* riso blue */
+  --cd: oklch(0.66 0.125 75);           /* riso ochre: fills only */
+  --cd-ink: oklch(0.48 0.10 70);        /* ochre for small text */
+  --sans: "Montserrat", system-ui, sans-serif;
+  --serif: "EB Garamond", Garamond, serif;
+}
+*{ box-sizing:border-box; margin:0; padding:0; }
+html{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+body{ background:#777; font-family:var(--sans); color:var(--ink); font-size:8.6pt; line-height:1.5; }
+b{ font-weight:700; } em{ font-family:var(--serif); font-style:italic; font-weight:500; font-size:1.12em; letter-spacing:0; }
+i{ font-style:italic; color:var(--ink-2); }
+
+.page{ width:210mm; height:297mm; position:relative; overflow:hidden; background:var(--stock);
+  padding:16mm 17mm 20mm; margin:0 auto 6mm; page-break-after:always; break-after:page; display:flex; flex-direction:column; }
+.page::after{ content:""; position:absolute; inset:0; pointer-events:none; mix-blend-mode:multiply; opacity:.13;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .1  0 0 0 0 .1  0 0 0 0 .12  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+@media print{ body{ background:none; } .page{ margin:0; } }
+
+/* halftone screen used as riso spot fill */
+.ht-biz,.ht-brand,.ht-cd{ background-size:3.2px 3.2px; }
+
+/* logo */
+.logo{ display:inline-flex; flex-direction:column; line-height:.82; letter-spacing:-.01em; }
+.logo .l1{ font-weight:800; font-style:normal; }
+.logo .l2{ font-weight:200; font-style:italic; margin-left:-.02em; }
+.logo-xl{ font-size:30pt; }
+
+/* footer */
+.pf{ position:absolute; left:17mm; right:17mm; bottom:9mm; display:flex; align-items:center; gap:4mm; font-size:6.8pt; color:var(--ink-2); border-top:.6pt solid var(--rule); padding-top:2.4mm; }
+.pf .logo{ font-size:8pt; color:var(--ink); }
+.pf-t{ flex:1; font-weight:600; letter-spacing:.06em; text-transform:uppercase; }
+.pf-t.biz{ color:var(--biz);} .pf-t.brand{ color:var(--brand);} .pf-t.cd{ color:var(--cd-ink);}
+.pf-n{ font-family:var(--serif); font-size:11pt; color:var(--ink); }
+
+/* type */
+.ph{ font-weight:800; font-size:24pt; line-height:1.05; letter-spacing:-.025em; text-wrap:balance; margin-bottom:4mm; }
+.ph em{ font-weight:400; font-size:1.08em; }
+.lede{ font-size:10pt; line-height:1.55; max-width:70ch; margin-bottom:7mm; color:var(--ink); text-wrap:pretty; }
+.sh{ font-size:8.4pt; font-weight:700; letter-spacing:.04em; text-transform:uppercase; margin-bottom:3mm; padding-bottom:1.6mm; border-bottom:1.2pt solid var(--ink); }
+.fine{ font-size:7pt; color:var(--ink-2); margin-top:2mm; }
+
+/* cover */
+.cover{ padding:0; background:var(--ink); color:var(--stock); }
+.cover::after{ opacity:.22; mix-blend-mode:screen; }
+.cv{ position:relative; height:100%; padding:20mm 18mm 16mm; display:flex; flex-direction:column; }
+.cv-top{ display:flex; justify-content:space-between; align-items:flex-start; }
+.cv-for{ font-size:7.5pt; letter-spacing:.06em; text-transform:uppercase; opacity:.75; text-align:right; max-width:40mm; }
+.cv-mid{ margin-top:auto; margin-bottom:14mm; }
+.cv h1{ font-weight:800; font-size:52pt; line-height:.95; letter-spacing:-.035em; }
+.cv h1 em{ font-weight:400; font-size:1.05em; letter-spacing:-.01em; }
+.cv-sub{ margin-top:7mm; font-size:11pt; line-height:1.5; max-width:62ch; opacity:.86; }
+.cv-bands{ display:grid; grid-template-columns:1.6fr 1fr .7fr; height:46mm; }
+.cvb{ position:relative; padding:4mm 5mm; display:flex; flex-direction:column; justify-content:space-between; color:var(--stock); }
+.cvb span{ font-family:var(--serif); font-size:30pt; line-height:1; }
+.cvb p{ font-weight:700; font-size:8pt; letter-spacing:.05em; text-transform:uppercase; line-height:1.25; }
+.cvb.biz{ background-color:var(--biz); background-image:radial-gradient(oklch(0.45 0.16 31) 34%, transparent 36%); background-size:3.2px 3.2px; }
+.cvb.brand{ background-color:var(--brand); background-image:radial-gradient(oklch(0.37 0.12 258) 34%, transparent 36%); background-size:3.2px 3.2px; }
+.cvb.cd{ background-color:var(--cd); color:var(--ink); background-image:radial-gradient(oklch(0.56 0.12 72) 34%, transparent 36%); background-size:3.2px 3.2px; }
+.cv-note{ margin-top:6mm; font-size:7pt; opacity:.7; } .cv-note i{ color:inherit; }
+
+/* orientation */
+.two{ display:grid; grid-template-columns:1.05fr 1fr; gap:9mm; margin-bottom:8mm; }
+.pos{ width:100%; border-collapse:collapse; font-size:7.8pt; }
+.pos td{ padding:2.1mm 1.5mm 2.1mm 0; border-bottom:.5pt solid var(--rule); vertical-align:top; }
+.pos td:first-child{ font-weight:600; width:34%; }
+.pos td:last-child{ color:var(--ink-2); }
+.lv{ font-weight:700; font-size:7pt; text-transform:uppercase; letter-spacing:.04em; white-space:nowrap; width:18%; }
+.lv5{ color:oklch(0.45 0.1 160);} .lv4{ color:oklch(0.48 0.09 160);} .lv3{ color:var(--cd-ink);} .lv2{ color:var(--biz);} .lv1{ color:var(--biz); text-decoration:underline; text-underline-offset:2px; }
+.rules{ list-style:none; counter-reset:r; font-size:7.9pt; }
+.rules li{ counter-increment:r; position:relative; padding-left:7mm; margin-bottom:2.4mm; }
+.rules li::before{ content:counter(r); position:absolute; left:0; top:-.5mm; font-family:var(--serif); font-size:12pt; color:var(--biz); }
+.loop{ display:grid; grid-template-columns:repeat(5,1fr); }
+.loop div{ padding:3.5mm 3mm 0 0; font-size:7.6pt; }
+.loop span{ display:block; font-family:var(--serif); font-size:20pt; line-height:1; color:var(--brand); margin-bottom:1.5mm; }
+.loop b{ display:block; font-size:8.6pt; margin-bottom:1mm; }
+.loop p{ color:var(--ink-2); }
+
+/* tree */
+.tree{ display:grid; grid-template-columns:repeat(3,1fr); gap:5mm; flex:1; align-items:end; }
+.tcol{ display:flex; flex-direction:column; gap:1.8mm; }
+.tch{ font-weight:700; font-size:7.6pt; letter-spacing:.05em; text-transform:uppercase; padding-bottom:1.5mm; margin-bottom:1mm; border-bottom:1.6pt solid currentColor; }
+.tch.biz{ color:var(--biz);} .tch.brand{ color:var(--brand);} .tch.cd{ color:var(--cd-ink);}
+.nd{ display:grid; grid-template-columns:9mm 1fr; column-gap:1.5mm; align-items:baseline; padding:3mm 2.8mm; border:.7pt solid; font-size:7.8pt; background:oklch(1 0 0 / .35); }
+.nd b{ font-family:var(--serif); font-weight:500; font-size:11pt; line-height:1; }
+.nd span{ font-weight:600; }
+.nd small{ grid-column:2; font-size:6.6pt; color:var(--ink-2); font-weight:500; }
+.nd.biz{ border-color:var(--biz);} .nd.biz b{ color:var(--biz);}
+.nd.brand{ border-color:var(--brand);} .nd.brand b{ color:var(--brand);}
+.nd.cd{ border-color:var(--cd);} .nd.cd b{ color:var(--cd-ink);}
+.nst{ font-style:normal; color:var(--biz); margin-left:1.2mm; }
+.roots{ margin-top:5mm; display:grid; grid-template-columns:14mm repeat(3,1fr); gap:3mm; align-items:center; padding-top:3mm; border-top:1.6pt solid var(--ink); }
+.roots-l{ font-family:var(--serif); font-style:italic; font-size:12pt; }
+.nd.root{ border-color:var(--ink); background:var(--ink); color:var(--stock); }
+.nd.root b{ color:var(--stock); }
+
+/* critical path */
+.cp{ list-style:none; display:grid; grid-template-columns:repeat(8,1fr); border-top:1.6pt solid var(--ink); }
+.cp li{ padding:3mm 2mm 3mm 0; border-right:.5pt solid var(--rule); padding-left:2mm; min-height:40mm; position:relative; }
+.cp li:first-child{ padding-left:0; }
+.cp li:last-child{ border-right:0; }
+.cp li::before{ content:""; position:absolute; top:-1.6mm; left:2mm; width:2.6mm; height:2.6mm; border-radius:50%; background:currentColor; }
+.cp li:first-child::before{ left:0; }
+.cp li.biz{ color:var(--biz);} .cp li.brand{ color:var(--brand);}
+.cp-w{ font-size:6.6pt; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-2); margin-top:1.5mm; }
+.cp-c{ font-family:var(--serif); font-size:12.5pt; line-height:1.1; margin:1.5mm 0; }
+.cp-n{ font-size:7.4pt; color:var(--ink); font-weight:500; line-height:1.35; }
+.cp-under{ margin-top:2mm; padding:2.4mm 3mm; font-size:7.6pt; color:var(--ink);
+  background-color:oklch(0.66 0.125 75 / .22); background-image:radial-gradient(oklch(0.66 0.125 75 / .5) 30%, transparent 33%); background-size:3.2px 3.2px; }
+.cp-under b{ font-family:var(--serif); font-size:11pt; font-weight:500; margin-right:2mm; color:var(--cd-ink); }
+.rhythm{ width:100%; border-collapse:collapse; font-size:8pt; }
+.rhythm th{ text-align:left; font-size:6.8pt; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-2); padding:0 0 1.5mm; font-weight:600; }
+.rhythm td{ padding:2.3mm 3mm 2.3mm 0; border-top:.5pt solid var(--rule); }
+.rhythm td:first-child{ font-weight:700; width:18%; } .rhythm td:nth-child(2){ width:14%; color:var(--ink-2); }
+.minimum{ margin-top:6mm; padding:4mm 5mm; background:var(--ink); color:var(--stock); font-size:9pt; }
+
+/* track header */
+.trk{ display:grid; grid-template-columns:auto 1fr; gap:6mm; align-items:end; padding:0 0 3mm; margin-bottom:5mm; border-bottom:2.4pt solid currentColor; }
+.trk.biz{ color:var(--biz);} .trk.brand{ color:var(--brand);} .trk.cd{ color:var(--cd-ink);}
+.trk-n{ font-weight:800; font-size:17pt; letter-spacing:-.02em; line-height:1; }
+.trk-s{ font-size:8pt; color:var(--ink-2); text-align:right; max-width:80mm; justify-self:end; }
+
+/* module */
+.mod{ margin-bottom:7mm; }
+.mod + .mod{ padding-top:6mm; border-top:.6pt solid var(--rule); }
+.mod-h{ display:grid; grid-template-columns:17mm 1fr 34mm; gap:4mm; align-items:start; margin-bottom:3.5mm; }
+.code{ font-family:var(--serif); font-size:30pt; line-height:.85; }
+.t-biz .code{ color:var(--biz);} .t-brand .code{ color:var(--brand);}
+.mod-tt h2{ font-size:13.5pt; font-weight:800; letter-spacing:-.015em; line-height:1.15; margin-bottom:1.2mm; }
+.star{ display:inline-block; vertical-align:middle; font-size:6.4pt; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--biz); border:.7pt solid var(--biz); padding:.3mm 1.4mm; margin-left:1.5mm; position:relative; top:-.6mm; }
+.why{ font-size:8.4pt; color:var(--ink-2); max-width:72ch; }
+.deps{ font-size:6.8pt; color:var(--ink-2); display:flex; flex-direction:column; gap:.6mm; text-align:right; padding-top:1mm; }
+.deps b{ color:var(--ink); font-weight:600; }
+.mod-b{ display:grid; grid-template-columns:1fr 1.25fr; gap:5mm; }
+.mem{ align-self:start; padding:3.5mm 4mm 3.5mm; position:relative; border:.8pt solid; }
+.t-biz .mem{ border-color:var(--biz); background-color:oklch(0.55 0.165 31 / .06); }
+.t-brand .mem{ border-color:var(--brand); background-color:oklch(0.46 0.12 258 / .06); }
+.mem::before{ content:""; position:absolute; right:0; top:0; width:16mm; height:9mm; background-size:3.2px 3.2px; }
+.t-biz .mem::before{ background-image:radial-gradient(oklch(0.55 0.165 31 / .55) 30%, transparent 33%); }
+.t-brand .mem::before{ background-image:radial-gradient(oklch(0.46 0.12 258 / .55) 30%, transparent 33%); }
+.mod-b h3{ font-family:var(--serif); font-style:italic; font-weight:500; font-size:13pt; line-height:1; margin-bottom:2.6mm; }
+.t-biz .mem h3{ color:var(--biz);} .t-brand .mem h3{ color:var(--brand);}
+.mem ol{ list-style:none; counter-reset:m; }
+.mem li{ counter-increment:m; position:relative; padding-left:5mm; margin-bottom:1.7mm; font-size:8pt; line-height:1.45; }
+.mem li::before{ content:counter(m); position:absolute; left:0; top:0; font-weight:700; font-size:7pt; }
+.t-biz .mem li::before{ color:var(--biz);} .t-brand .mem li::before{ color:var(--brand);}
+.apply{ padding-top:3.5mm; }
+.apply ol{ list-style:none; }
+.apply li{ padding:0 0 2.3mm; margin-bottom:2.3mm; border-bottom:.5pt solid var(--rule); }
+.ex-t{ font-weight:700; font-size:8.4pt; margin-bottom:.4mm; }
+.ex-d{ font-size:7.9pt; line-height:1.45; }
+.ex-m{ display:flex; justify-content:space-between; font-size:6.6pt; font-weight:600; letter-spacing:.03em; text-transform:uppercase; color:var(--ink-2); margin-top:.8mm; }
+.done{ display:flex; gap:2mm; align-items:flex-start; font-size:7.8pt; font-weight:600; }
+.box{ flex:none; display:inline-block; width:3.2mm; height:3.2mm; border:.9pt solid var(--ink); margin-top:.5mm; }
+
+/* models */
+.mm{ margin-top:2mm; }
+.mm-i{ font-size:7.8pt; color:var(--ink-2); margin-bottom:2.5mm; }
+.mm-l{ list-style:none; columns:2; column-gap:7mm; }
+.mm-l li{ break-inside:avoid; display:grid; grid-template-columns:30mm 1fr; column-gap:2.5mm; padding:1.9mm 0; border-bottom:.5pt solid var(--rule); }
+.mm-n{ font-family:var(--serif); font-style:italic; font-size:10.5pt; line-height:1.15; grid-row:span 2; color:var(--biz); }
+.mm-q{ font-weight:600; font-size:7.7pt; }
+.mm-u{ font-size:7.1pt; color:var(--ink-2); }
+
+/* formulas */
+.formulas{ margin-top:1mm; }
+.formulas dl{ display:grid; grid-template-columns:30mm 1fr; }
+.formulas dt{ font-family:var(--serif); font-style:italic; font-size:11pt; color:var(--brand); padding:1.8mm 0; border-bottom:.5pt solid var(--rule); }
+.formulas dd{ font-size:8.4pt; font-weight:500; padding:2.2mm 0; border-bottom:.5pt solid var(--rule); }
+
+/* CD list */
+.cdl{ list-style:none; }
+.cdl li{ display:grid; grid-template-columns:13mm 1fr 1.05fr 5mm; gap:4mm; padding:3.4mm 0; border-bottom:.5pt solid var(--rule); align-items:start; }
+.cd-c{ font-family:var(--serif); font-size:20pt; line-height:.9; color:var(--cd-ink); }
+.cd-n{ font-weight:800; font-size:10pt; margin-bottom:.8mm; }
+.cd-m{ font-size:8.6pt; line-height:1.4; }
+.cd-m em{ color:var(--cd-ink); }
+.cd-e{ font-size:7.9pt; line-height:1.45; }
+.cd-e b{ font-family:var(--serif); font-style:italic; font-weight:500; font-size:10pt; color:var(--cd-ink); margin-right:1mm; }
+.cd-d{ font-size:6.6pt; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-2); margin-top:1mm; }
+.cdl .box{ margin-top:1mm; }
+
+/* roadmap */
+.road{ width:100%; border-collapse:collapse; font-size:7.6pt; }
+.road th{ text-align:left; font-size:6.8pt; letter-spacing:.05em; text-transform:uppercase; padding:0 2.5mm 1.8mm 0; border-bottom:1.6pt solid var(--ink); font-weight:700; }
+.road th.biz{ color:var(--biz);} .road th.brand{ color:var(--brand);} .road th.cd{ color:var(--cd-ink);}
+.road td{ padding:3mm 3mm 3mm 0; border-bottom:.5pt solid var(--rule); vertical-align:top; line-height:1.45; }
+.road td.q{ font-family:var(--serif); font-size:17pt; line-height:1; width:15mm; }
+.road td.q small{ display:block; font-family:var(--sans); font-size:6.4pt; color:var(--ink-2); margin-top:1mm; letter-spacing:.03em; }
+.road td:last-child{ width:30%; }
+.read{ display:grid; grid-template-columns:1fr 1fr .9fr; gap:6mm; font-size:7.6pt; }
+.read p{ padding:1.1mm 0; border-bottom:.5pt solid var(--rule); }
+.read i{ color:var(--ink); font-weight:600; font-style:italic; }
+.rh{ font-weight:700; font-size:7pt !important; letter-spacing:.05em; text-transform:uppercase; border-bottom:1.6pt solid currentColor !important; }
+.read .biz .rh{ color:var(--biz);} .read .brand .rh{ color:var(--brand);} .read .cd .rh{ color:var(--cd-ink);}
+
+/* templates */
+.tpl{ margin-bottom:8mm; }
+.frm p, .frm-q{ display:flex; flex-direction:column; font-size:7.6pt; margin-bottom:2.2mm; }
+.frm b, .frm-q b{ font-weight:700; font-size:7pt; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-2); }
+.ln{ display:block; height:7mm; border-bottom:.6pt solid var(--rule); }
+.row3{ flex-direction:row !important; justify-content:space-between; padding:3mm 0; border-bottom:.6pt solid var(--rule); }
+.mr, .sc{ width:100%; border-collapse:collapse; font-size:7.8pt; }
+.mr td{ border:.6pt solid var(--rule); padding:3.4mm 2.5mm; }
+.mr td:nth-child(odd){ font-weight:600; width:30%; background:oklch(0.21 0.012 255 / .035); }
+.sc th{ font-size:6.8pt; letter-spacing:.05em; text-transform:uppercase; text-align:left; padding:0 0 1.8mm; border-bottom:1.6pt solid var(--ink); }
+.sc td{ padding:3.1mm 2mm 3.1mm 0; border-bottom:.5pt solid var(--rule); }
+.sc td:not(:first-child), .sc th:not(:first-child){ width:11%; text-align:center; border-left:.5pt solid var(--rule); }
+.sc tr.key td{ font-weight:700; background:oklch(0.55 0.165 31 / .08); }
+.frm-q{ margin-top:4mm; }
+.spacer{ flex:1; }
+
+.wk1{ margin-top:8mm; }
+.wk1 ol{ list-style:none; display:grid; grid-template-columns:1fr 1fr; column-gap:8mm; }
+.wk1 li{ display:flex; gap:2.5mm; align-items:flex-start; padding:2.2mm 0; border-bottom:.5pt solid var(--rule); font-size:8pt; }
+.wk1 li:last-child{ grid-column:span 2; }
+.wk1 b{ font-family:var(--serif); font-style:italic; font-weight:500; font-size:10pt; color:var(--biz); margin-right:1mm; }
+.howto{ margin-top:9mm; }
+.howto dl{ display:grid; grid-template-columns:30mm 1fr; }
+.howto dt{ font-family:var(--serif); font-style:italic; font-size:11pt; padding:2.2mm 0; border-bottom:.5pt solid var(--rule); }
+.howto dd{ font-size:8pt; padding:2.6mm 0; border-bottom:.5pt solid var(--rule); }
+.psy{ margin-top:6mm; }
+.psy table{ width:100%; border-collapse:collapse; font-size:8pt; }
+.psy td{ padding:1.8mm 3mm 1.8mm 0; border-bottom:.5pt solid var(--rule); vertical-align:top; }
+.psy .pn{ font-family:var(--serif); font-style:italic; font-size:10.5pt; color:var(--brand); width:36mm; }
+.psy .pm{ font-size:6.8pt; font-weight:700; letter-spacing:.04em; text-align:right; color:var(--ink-2); width:16mm; }
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0"/></filter></svg>
+<div class="page cover">
+<div class="cv">
+  <div class="cv-top"><span class="logo logo-xl"><span class="l1">Els</span><span class="l2">wheir</span></span><p class="cv-for">Prepared for Svish · Trivandrum · November 2026</p></div>
+  <div class="cv-mid">
+    <h1>The <em>Operator’s</em><br>Curriculum</h1>
+    <p class="cv-sub">Creative direction, brand strategy and business judgement. A 12-month workbook with what to memorise, what to practise, and what to prove.</p>
+  </div>
+  <div class="cv-bands">
+    <div class="cvb biz"><span>C</span><p>Business<br>Acumen</p></div>
+    <div class="cvb brand"><span>B</span><p>Brand<br>Strategy</p></div>
+    <div class="cvb cd"><span>A</span><p>Creative<br>Direction</p></div>
+  </div>
+  <p class="cv-note">Indian tax and legal points in this workbook are from memory and are marked <i>verify</i>. Confirm them with a CA or lawyer before you act.</p>
+</div></div><div class="page ">
+<h1 class="ph">Built around <em>where you are</em></h1>
+<p class="lede">You have the eye. What decides whether Elswheir lasts is pricing, cash, client choice and contracts. So the order is <b>business acumen first, brand strategy second,</b> and creative direction refined alongside. Strategy and business acumen are one skill seen from two sides: thinking about your client’s business, and thinking about your own.</p>
+
+<div class="two">
+  <div>
+    <h3 class="sh">Your starting position</h3>
+    <table class="pos">
+      <tr><td>Visual &amp; concept judgement</td><td class="lv lv5">Strong</td><td>5+ years film and animation concept work</td></tr>
+      <tr><td>Audience psychology</td><td class="lv lv4">Raw edge</td><td>BA psychology, not yet turned into written deliverables</td></tr>
+      <tr><td>Content strategy</td><td class="lv lv3">Partial</td><td>Tactical level, one step below brand strategy</td></tr>
+      <tr><td>Positioning &amp; platforms</td><td class="lv lv2">Gap</td><td>Track B builds this</td></tr>
+      <tr><td>Financial command</td><td class="lv lv2">Gap</td><td>Track C builds this</td></tr>
+      <tr><td>Proof of effectiveness</td><td class="lv lv1">Biggest gap</td><td>One anchor client and no case studies with numbers yet</td></tr>
+    </table>
+  </div>
+  <div>
+    <h3 class="sh">Rules for the way your mind works</h3>
+    <ol class="rules">
+      <li><b>Output, not input.</b> For every hour of reading, spend two hours applying it to a live client. Reading feels like progress. It isn’t.</li>
+      <li><b>Work on two skills at a time, no more:</b> one business skill and one strategy skill.</li>
+      <li><b>A skill counts as done only when its output exists.</b> Tick the box, not the chapter.</li>
+      <li><b>When a week collapses,</b> protect just two habits: the receivables check and one practice session.</li>
+      <li><b>When you’re blocked,</b> walk, game or sleep first. Come back after. Don’t force output.</li>
+      <li><b>Teach it back.</b> After each skill, write a 200-word post in your own words. It’s retrieval practice, and it doubles as Elswheir LinkedIn content.</li>
+    </ol>
+  </div>
+</div>
+
+<h3 class="sh">The mastery loop: run it on every exercise</h3>
+<div class="loop">
+  <div><span>1</span><b>Predict</b><p>Write what you expect and how confident you are.</p></div>
+  <div><span>2</span><b>Do</b><p>Ship it to a real client with real stakes.</p></div>
+  <div><span>3</span><b>Measure</b><p>Record what actually happened, in numbers.</p></div>
+  <div><span>4</span><b>Review</b><p>Where was your model wrong? Write the rule.</p></div>
+  <div><span>5</span><b>Critique</b><p>Monthly, with someone more senior than you.</p></div>
+</div>
+
+<div class="wk1">
+  <h3 class="sh">Your first seven days</h3>
+  <ol>
+    <li><span class="box"></span><p><b>Day 1.</b> List every unpaid invoice with its age in days (C4).</p></li>
+    <li><span class="box"></span><p><b>Day 2.</b> Pull 3 months of bank statements and build the rough P&amp;L (C1).</p></li>
+    <li><span class="box"></span><p><b>Day 3.</b> Work out AIME’s share of your revenue (C2).</p></li>
+    <li><span class="box"></span><p><b>Day 4.</b> Book the CA session and send the agenda from C6.</p></li>
+    <li><span class="box"></span><p><b>Day 5.</b> Start the decision journal with one open decision (C7).</p></li>
+    <li><span class="box"></span><p><b>Day 6.</b> Ask AIME for enquiry and enrolment numbers for the last two seasons (B1).</p></li>
+    <li><span class="box"></span><p><b>Day 7.</b> Rest. Walk. Let it settle.</p></li>
+  </ol>
+</div>
+
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t ">Orientation</span><span class="pf-n">02</span></footer></div><div class="page ">
+<h1 class="ph">The skill <em>tree</em></h1>
+<p class="lede">Read it from the bottom up. Roots feed everything above them. A <b>★ shared skill</b> builds two or more tracks with one round of practice, so do those first. The small notes show where a skill depends on another track.</p>
+
+<div class="tree">
+  <div class="tcol">
+    <p class="tch biz">C · Business acumen</p>
+    <div class="nd biz"><b>C7</b><span>Decision quality</span><small>capstone · uses C1–C6</small></div>
+    <div class="nd biz"><b>C5</b><span>Sales &amp; negotiation<i class="nst">★</i></span><small>→ A5</small></div>
+    <div class="nd biz"><b>C3</b><span>Pricing &amp; value<i class="nst">★</i></span><small>→ A5</small></div>
+    <div class="nd biz"><b>C6</b><span>Contracts &amp; tax<i class="nst">★</i></span><small>→ A8</small></div>
+    <div class="nd biz"><b>C4</b><span>Cash &amp; collections</span></div>
+    <div class="nd biz"><b>C2</b><span>Unit economics<i class="nst">★</i></span><small>→ B1 · A6</small></div>
+    <div class="nd biz"><b>C1</b><span>Financial literacy</span><small>unlocks most of the tree</small></div>
+  </div>
+  <div class="tcol">
+    <p class="tch brand">B · Brand strategy</p>
+    <div class="nd brand"><b>B9</b><span>Case studies<i class="nst">★</i></span><small>proof for all tracks</small></div>
+    <div class="nd brand"><b>B8</b><span>Effectiveness</span><small>needs C1</small></div>
+    <div class="nd brand"><b>B6</b><span>Architecture &amp; naming</span></div>
+    <div class="nd brand"><b>B5</b><span>Brand platform</span></div>
+    <div class="nd brand"><b>B7</b><span>Creative brief<i class="nst">★</i></span><small>→ A1 · A2</small></div>
+    <div class="nd brand"><b>B4</b><span>Positioning</span></div>
+    <div class="nd brand"><b>B3</b><span>Insight<i class="nst">★</i></span><small>→ A1</small></div>
+    <div class="nd brand"><b>B2</b><span>Research</span><small>needs R2</small></div>
+    <div class="nd brand"><b>B1</b><span>Client diagnosis</span><small>needs C1 · C2</small></div>
+  </div>
+  <div class="tcol">
+    <p class="tch cd">A · Creative direction</p>
+    <div class="nd cd"><b>A5</b><span>Selling the work</span><small>needs C3 · C5</small></div>
+    <div class="nd cd"><b>A8</b><span>Rights &amp; legal</span><small>needs C6</small></div>
+    <div class="nd cd"><b>A6</b><span>Production economics</span><small>needs C2</small></div>
+    <div class="nd cd"><b>A7</b><span>Systems &amp; guidelines</span></div>
+    <div class="nd cd"><b>A4</b><span>Killing work</span></div>
+    <div class="nd cd"><b>A3</b><span>Feedback language</span></div>
+    <div class="nd cd"><b>A2</b><span>Briefing others</span><small>needs B7</small></div>
+    <div class="nd cd"><b>A1</b><span>Idea vs execution</span><small>needs B3 · B7</small></div>
+    <div class="nd cd"><b>A9</b><span>Taste calibration</span><small>daily, throughout</small></div>
+  </div>
+</div>
+<div class="roots">
+  <p class="roots-l">Roots</p>
+  <div class="nd root"><b>R1</b><span>Clear writing: one-page thinking</span></div>
+  <div class="nd root"><b>R2</b><span>People psychology: you have this</span></div>
+  <div class="nd root"><b>R3</b><span>Numbers literacy</span></div>
+</div>
+
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t ">Map</span><span class="pf-n">03</span></footer></div><div class="page ">
+<h1 class="ph">The <em>critical path</em></h1>
+<p class="lede">This is the fastest route through the tree. Each step unlocks the next. <b>A9 taste calibration</b> runs underneath the whole time, at 15 minutes a day.</p>
+<ol class="cp"><li class="biz"><p class="cp-w">Wk 1–3</p><p class="cp-c">C1</p><p class="cp-n">Financial literacy</p></li><li class="biz"><p class="cp-w">Wk 3–5</p><p class="cp-c">C2★</p><p class="cp-n">Unit economics on Elswheir</p></li><li class="brand"><p class="cp-w">Wk 5–10</p><p class="cp-c">B1–B3</p><p class="cp-n">AIME diagnosis, interviews, insight</p></li><li class="brand"><p class="cp-w">Wk 10–14</p><p class="cp-c">B4 B7★</p><p class="cp-n">Positioning and the one-page brief</p></li><li class="biz"><p class="cp-w">Wk 14–20</p><p class="cp-c">C3★ C5★</p><p class="cp-n">Pricing and sales; unlocks A5</p></li><li class="biz"><p class="cp-w">Wk 20–26</p><p class="cp-c">C4 C6★</p><p class="cp-n">Cash, contracts; covers A8</p></li><li class="brand"><p class="cp-w">Mo 7–9</p><p class="cp-c">B5 B6 B8</p><p class="cp-n">Platforms, naming, effectiveness</p></li><li class="brand"><p class="cp-w">Mo 9–12</p><p class="cp-c">B9★ C7</p><p class="cp-n">Case studies and decision quality</p></li></ol>
+<div class="cp-under cd"><b>A9</b> Taste calibration: a 5-line breakdown of one great piece of work every day, all year</div>
+
+<h3 class="sh" style="margin-top:12mm">Operating rhythm</h3>
+<table class="rhythm">
+  <tr><th>When</th><th>Time</th><th>What</th></tr>
+  <tr><td>Daily</td><td>15 min</td><td>One breakdown (A9) and one insight reverse-engineered (B3)</td></tr>
+  <tr><td>Weekly</td><td>30 min</td><td>Receivables check, pipeline review, decision-journal entries</td></tr>
+  <tr><td>Weekly</td><td>2–3 hrs</td><td>Applied practice on one live client</td></tr>
+  <tr><td>Monthly</td><td>1 hr</td><td>Money review (template p. 17) and journal review</td></tr>
+  <tr><td>Monthly</td><td>1 hr</td><td>Outside critique with AD PROPHETS or a senior strategist</td></tr>
+  <tr><td>Quarterly</td><td>Half day</td><td>Strategy review, scorecard, one finished case study</td></tr>
+</table>
+<div class="howto">
+  <h3 class="sh">How to read a module</h3>
+  <dl>
+    <dt>Memorise</dt><dd>Five or six points to know cold. Read them aloud once a day while the skill is active. Quiz yourself with the right side covered.</dd>
+    <dt>Apply</dt><dd>Exercises on your real clients, each with an output and a time box. The output is the proof the skill is learned.</dd>
+    <dt>Done when</dt><dd>The test for moving on. Tick it only when it’s true, not when the reading is finished.</dd>
+    <dt>Needs / Unlocks</dt><dd>Where the skill sits in the tree. Don’t start a skill before the ones it needs.</dd>
+  </dl>
+</div>
+<p class="minimum"><b>Minimum viable week:</b> receivables check and one practice session. Everything else can slip. These two can’t.</p>
+
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t ">Map</span><span class="pf-n">04</span></footer></div><div class="page "><div class="trk biz"><p class="trk-n">Track C · Business acumen</p><p class="trk-s">Thinking about your own business: money, pricing, deals, risk. Start here.</p></div>
+<section class="mod t-biz">
+  <header class="mod-h">
+    <p class="code">C1</p>
+    <div class="mod-tt">
+      <h2>Financial literacy </h2>
+      <p class="why">Every other skill on this page needs numbers to stand on. You can’t price, choose clients or judge a bet you can’t measure.</p>
+    </div>
+    <p class="deps"><span>Unlocks <b>C2 · C4 · C6 · B1 · B8</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li>Revenue is vanity, profit is sanity, <em>cash is reality.</em></li><li>Profit = revenue − all costs, <b>including a fair salary for you.</b> If you don’t pay yourself, the profit isn’t real.</li><li>Gross margin = (revenue − direct project costs) ÷ revenue. Direct costs are tool credits, freelancers, vendors and partner shares.</li><li>Break-even = monthly fixed costs ÷ gross margin %.</li><li>Runway = cash in bank ÷ monthly burn.</li><li>GST you collect is <b>not your money.</b> Keep it separate the day it arrives.</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">Build the Elswheir P&amp;L</p><p class="ex-d">Last 3 months, every rupee in and out: Higgsfield and AI subscriptions, freelancers, partner splits with AD PROPHETS and AEVORO, internet, equipment.</p><p class="ex-m"><span>Output · One-sheet P&amp;L</span><span>2 hrs</span></p></li><li><p class="ex-t">Find your break-even</p><p class="ex-d">Fixed monthly costs plus your minimum salary, divided by your margin. Write the number on a card above your desk.</p><p class="ex-m"><span>Output · One number</span><span>30 min</span></p></li><li><p class="ex-t">Set up a tax account</p><p class="ex-d">Open a separate account for GST and tax. Move a fixed % of every receipt into it. Ask your CA what the % should be.</p><p class="ex-m"><span>Output · Standing instruction</span><span>1 hr</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when you can state last month’s revenue, margin, cash, receivables and break-even from memory.</p></div>
+  </div>
+</section>
+<section class="mod t-biz">
+  <header class="mod-h">
+    <p class="code">C2</p>
+    <div class="mod-tt">
+      <h2>Unit economics <span class="star" title="Shared node">★ shared</span></h2>
+      <p class="why">This tells you which work actually makes you money. The same lens becomes client diagnosis (B1) and production economics (A6).</p>
+    </div>
+    <p class="deps"><span>Unlocks <b>C3 · B1 · A6</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li>Effective rate = fee ÷ actual hours. <b>Use it to diagnose, never to price.</b></li><li>Chase <em>margin</em> per project, not revenue per project.</li><li>CAC is the time and money it takes to win a client. LTV is the margin earned over the whole relationship.</li><li>Healthy LTV is roughly 3× CAC or more. This is a SaaS rule of thumb; use it as a rough guide.</li><li>If one client is over ~40% of revenue, losing them is an existential risk (rough threshold).</li><li>Revisions silently eat your margin.</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">Review your last 5 projects</p><p class="ex-d">AIME, C0C0N promo, Bodhini and two more. For each: quoted vs actual hours, tool credits, revision rounds, final margin. Rank them by margin.</p><p class="ex-m"><span>Output · Ranked table</span><span>3 hrs</span></p></li><li><p class="ex-t">Check your AIME dependence</p><p class="ex-d">What share of the last 12 months’ revenue came from AIME? If it’s over 40%, set a 90-day target to land one more retainer.</p><p class="ex-m"><span>Output · % plus target</span><span>45 min</span></p></li><li><p class="ex-t">Cost per finished second</p><p class="ex-d">Total production cost of your AI video pipeline ÷ seconds delivered. This is your internal floor for any quote.</p><p class="ex-m"><span>Output · Floor rate</span><span>1 hr</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when you know your three most and least profitable kinds of work, and why.</p></div>
+  </div>
+</section>
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t biz">C · Business acumen</span><span class="pf-n">05</span></footer></div><div class="page ">
+<section class="mod t-biz">
+  <header class="mod-h">
+    <p class="code">C3</p>
+    <div class="mod-tt">
+      <h2>Pricing &amp; value <span class="star" title="Shared node">★ shared</span></h2>
+      <p class="why">Value-based pricing is your stated model. This module turns it from a belief into a method you can defend in front of a client.</p>
+    </div>
+    <p class="deps"><span>Unlocks <b>C5 · A5</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li>Price to the <em>value of the outcome,</em> not your effort.</li><li>Value = what the result is worth in the <b>client’s currency:</b> enrolments, sales, price premium.</li><li>Always offer three options. The middle is your target and the top sets the anchor.</li><li>Never cut price without removing scope.</li><li>Write your walk-away number <b>before</b> the call.</li><li>If you win more than ~70% of pitches, you are probably underpriced (rough heuristic).</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">Do the AIME value maths</p><p class="ex-d">Fee per student × the extra enrolments a campaign could plausibly drive = the value at stake. Decide the share of it you can defend, and write down your reasoning.</p><p class="ex-m"><span>Output · Value sheet</span><span>1 hr</span></p></li><li><p class="ex-t">Price the Dubai client in three tiers</p><p class="ex-d">Essential / Signature / Atelier, priced in AED, with the top tier as the anchor. Check the AED–INR rate on the day.</p><p class="ex-m"><span>Output · 3-tier proposal</span><span>2 hrs</span></p></li><li><p class="ex-t">Retire the rate card</p><p class="ex-d">Rewrite your services as packages, each with scope, number of revisions, usage rights and timeline.</p><p class="ex-m"><span>Output · Package sheet</span><span>2 hrs</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when every proposal states the client’s value before your price.</p></div>
+  </div>
+</section>
+<section class="mod t-biz">
+  <header class="mod-h">
+    <p class="code">C4</p>
+    <div class="mod-tt">
+      <h2>Cash &amp; collections </h2>
+      <p class="why">Profitable studios still die of empty bank accounts. This module is mostly habit, not theory.</p>
+    </div>
+    <p class="deps"><span>Unlocks <b>C7</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li>Work never runs <b>ahead of payment.</b></li><li>Take a 40–50% advance on project work and bill the rest by milestone.</li><li>Invoice the day a milestone is hit. Follow up on fixed days.</li><li>Money owed to you above one month of revenue is a red flag.</li><li>Put a late-payment clause in every contract.</li><li>Keep a 3–6 month buffer covering personal and studio costs (rough guide).</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">List what you’re owed</p><p class="ex-d">Every unpaid invoice today, with its age in days. Chase anything over 30 days this week.</p><p class="ex-m"><span>Output · Receivables list</span><span>30 min</span></p></li><li><p class="ex-t">Write three follow-up templates</p><p class="ex-d">A friendly one for day 3, a firm one for day 15, a final notice for day 30. Write them once and reuse them.</p><p class="ex-m"><span>Output · 3 templates</span><span>45 min</span></p></li><li><p class="ex-t">Calculate your runway</p><p class="ex-d">Cash in bank ÷ (studio plus personal monthly costs). If it’s under 3 months, that becomes priority one.</p><p class="ex-m"><span>Output · Months of runway</span><span>20 min</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when receivables stay under one month of revenue for a full quarter.</p></div>
+  </div>
+</section>
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t biz">C · Business acumen</span><span class="pf-n">06</span></footer></div><div class="page ">
+<section class="mod t-biz">
+  <header class="mod-h">
+    <p class="code">C5</p>
+    <div class="mod-tt">
+      <h2>Sales &amp; negotiation <span class="star" title="Shared node">★ shared</span></h2>
+      <p class="why">You already read people well. This module turns that into a repeatable process, and covers your partner deals.</p>
+    </div>
+    <p class="deps"><span>Unlocks <b>A5</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li>Ask before you pitch: <b>problem, impact, budget, decision-maker, timeline.</b></li><li>Know your BATNA, your best alternative if the deal dies. The stronger it is, the calmer you negotiate.</li><li><em>Trade, don’t give.</em> Every concession should get you something back.</li><li>Silence is a tool. Let the client fill it.</li><li>Name the emotion: “It sounds like timing is the real concern.”</li><li>For every partnership, write down what each side gives and what each side gets.</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">Script your discovery call</p><p class="ex-d">Run the five questions on the next lead and log the answers in a sales sheet with a dated next step.</p><p class="ex-m"><span>Output · Sales log row</span><span>Each call</span></p></li><li><p class="ex-t">Map partner economics</p><p class="ex-d">AD PROPHETS, AEVORO, and the Bodhini alliance: who brings leads, who delivers, the % splits, who owns the client relationship. Mark any imbalance.</p><p class="ex-m"><span>Output · One-page map</span><span>1.5 hrs</span></p></li><li><p class="ex-t">Prepare objections for Girl Rising</p><p class="ex-d">Write the three objections they are most likely to raise to your producer pitch, with your answer to each.</p><p class="ex-m"><span>Output · Objection sheet</span><span>45 min</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when you never end a sales call without knowing the budget signal and who decides.</p></div>
+  </div>
+</section>
+<section class="mod t-biz">
+  <header class="mod-h">
+    <p class="code">C6</p>
+    <div class="mod-tt">
+      <h2>Contracts, tax &amp; compliance <span class="star" title="Shared node">★ shared</span></h2>
+      <p class="why">Mistakes here are expensive and hard to undo. This module also covers creative usage rights (A8). Verify every point below with a CA or lawyer.</p>
+    </div>
+    <p class="deps"><span>Unlocks <b>A8 · C7</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li>No work starts without <b>signed scope plus advance.</b></li><li>IP transfers only on <em>full payment.</em></li><li>Price usage rights separately by medium, territory and term. Cap your liability at the fee.</li><li>GST: registration is generally required above ₹20 lakh aggregate turnover for services. <i>From memory, verify.</i></li><li>Exports such as the Dubai work may be zero-rated under a LUT if they meet the export conditions. Keep the FIRC/FIRA. <i>Verify.</i></li><li>Reconcile TDS against Form 26AS/AIS every quarter, or you lose the credit.</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">Book a CA session</p><p class="ex-d">Agenda: GST status, whether 44ADA applies to your work, which TDS sections clients use, the LUT for Dubai, export paperwork.</p><p class="ex-m"><span>Output · Written answers</span><span>1 hr</span></p></li><li><p class="ex-t">Get a master contract</p><p class="ex-d">One master service agreement plus a SOW template, drafted by a lawyer. Do it once and reuse it.</p><p class="ex-m"><span>Output · Templates</span><span>Lawyer fee</span></p></li><li><p class="ex-t">Find what isn’t written down</p><p class="ex-d">Check the AIME and Dubai arrangements: is any scope, payment term or rights clause only verbal?</p><p class="ex-m"><span>Output · Gap list</span><span>1 hr</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when you know your quarterly tax dates and every active client has a signed agreement.</p></div>
+  </div>
+</section>
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t biz">C · Business acumen</span><span class="pf-n">07</span></footer></div><div class="page ">
+<section class="mod t-biz">
+  <header class="mod-h">
+    <p class="code">C7</p>
+    <div class="mod-tt">
+      <h2>Decision quality </h2>
+      <p class="why">This is the capstone, and it’s what being a “grounded but successful” businessman comes down to: deciding well on incomplete information, again and again.</p>
+    </div>
+    <p class="deps"><span>Unlocks <b>Everything</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li>Judge a decision by its <b>process,</b> not its outcome. Good calls can still lose.</li><li>One-way doors go slow, two-way doors go fast.</li><li>Assume 1.5× the cost and 2× the time. Plan cash around that.</li><li>Grounded means protecting the downside. Successful means taking <em>sized</em> bets on the upside.</li><li>Make many small, survivable bets rather than a few large ones.</li><li>Write down what you expect <b>before</b> you know the result.</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">Pre-mortem the backup model</p><p class="ex-d">Kerala healthcare institute: “It’s 2028 and it failed. Why?” List 10 reasons, rank the top 3, and design the cheapest test for the riskiest one.</p><p class="ex-m"><span>Output · Pre-mortem sheet</span><span>1.5 hrs</span></p></li><li><p class="ex-t">Keep a decision journal</p><p class="ex-d">Log every decision above ₹50,000 or longer than 3 months, using the template at the back. Review it monthly.</p><p class="ex-m"><span>Output · Journal</span><span>10 min each</span></p></li><li><p class="ex-t">Run a quarterly review</p><p class="ex-d">Where did revenue come from? What should you stop, start, continue? What is the single biggest risk?</p><p class="ex-m"><span>Output · One page</span><span>Half day</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when you have 12 months of journal entries and can name your three most common mistakes in judgement.</p></div>
+  </div>
+</section>
+<div class="mm"><h3 class="sh">C7 · The twelve models to memorise</h3>
+<p class="mm-i">Cover the right two columns and quiz yourself. Then name one live decision each model applies to this week.</p>
+<ol class="mm-l"><li><p class="mm-n">Opportunity cost</p><p class="mm-q">What am I not doing if I say yes?</p><p class="mm-u">A low-fee project vs time spent on the Dubai wedge.</p></li><li><p class="mm-n">Base rates</p><p class="mm-q">How does this usually go for people like me?</p><p class="mm-u">A new revenue line: assume it is slower and smaller.</p></li><li><p class="mm-n">Second-order effects</p><p class="mm-q">And then what?</p><p class="mm-u">A discount for one client becomes the price everyone expects.</p></li><li><p class="mm-n">Inversion</p><p class="mm-q">How would I guarantee this fails?</p><p class="mm-u">Then avoid exactly that.</p></li><li><p class="mm-n">Pre-mortem</p><p class="mm-q">It’s a year later and it failed. Why?</p><p class="mm-u">Run it before any big commitment.</p></li><li><p class="mm-n">Expected value</p><p class="mm-q">Probability × payoff, compared across options.</p><p class="mm-u">Which pitches deserve your week.</p></li><li><p class="mm-n">Reversibility</p><p class="mm-q">Is this a one-way or a two-way door?</p><p class="mm-u">Hiring, equity and long contracts are one-way doors.</p></li><li><p class="mm-n">Margin of safety</p><p class="mm-q">What if it costs 1.5× and takes 2× as long?</p><p class="mm-u">Cash planning, launch timing.</p></li><li><p class="mm-n">Concentration</p><p class="mm-q">What breaks if one thing fails?</p><p class="mm-u">One client, one partner, one platform.</p></li><li><p class="mm-n">Incentives</p><p class="mm-q">What does each party actually gain?</p><p class="mm-u">Partner splits, client stakeholders.</p></li><li><p class="mm-n">Sunk cost</p><p class="mm-q">Would I start this today, knowing what I know?</p><p class="mm-u">Long pitches going nowhere.</p></li><li><p class="mm-n">Circle of competence</p><p class="mm-q">Do I actually know this, or do I just feel confident?</p><p class="mm-u">Healthcare, trading, new markets.</p></li></ol></div>
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t biz">C · Business acumen</span><span class="pf-n">08</span></footer></div><div class="page "><div class="trk brand"><p class="trk-n">Track B · Brand strategy</p><p class="trk-s">Thinking about your client’s business: finding the truth, defining the brand, proving it worked.</p></div>
+<section class="mod t-brand">
+  <header class="mod-h">
+    <p class="code">B1</p>
+    <div class="mod-tt">
+      <h2>Client business diagnosis </h2>
+      <p class="why">Most marketing problems are business problems in disguise. Find the real one before you touch a brief.</p>
+    </div>
+    <p class="deps"><span>Needs <b>C1 · C2</b></span><span>Unlocks <b>B2</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li>Ask: how do they make money, and <b>where does it leak?</b></li><li>Map the funnel: awareness → enquiry → conversion → retention → referral.</li><li>Find the <em>constraint,</em> the one stage that limits growth. Work there.</li><li>Seasonality decides timing. For NEET/JEE that means results season and admission windows.</li><li>A client asking for “more reels” rarely needs more reels.</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">AIME on one page</p><p class="ex-d">Fee structure, cost per enquiry, enquiry-to-enrolment conversion, competitor fees, seasonal calendar. Circle the constraint.</p><p class="ex-m"><span>Output · Diagnosis page</span><span>3 hrs</span></p></li><li><p class="ex-t">Bodhini on one page</p><p class="ex-d">Channels, repeat-purchase rate, margin per bottle, who buys vs who uses. Ask AD PROPHETS for the data.</p><p class="ex-m"><span>Output · Diagnosis page</span><span>2 hrs</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when you can explain each client’s growth constraint in one sentence.</p></div>
+  </div>
+</section>
+<section class="mod t-brand">
+  <header class="mod-h">
+    <p class="code">B2</p>
+    <div class="mod-tt">
+      <h2>Research </h2>
+      <p class="why">Your psychology degree is a real advantage here. This is where it starts showing up in client deliverables.</p>
+    </div>
+    <p class="deps"><span>Needs <b>R2 · B1</b></span><span>Unlocks <b>B3</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li>Ask about <b>past behaviour,</b> not future intentions.</li><li>Open with: <em>“Tell me about the last time you…”</em></li><li>5–8 interviews usually surface most patterns (common qualitative practice).</li><li>Keep what people <b>say, do and feel</b> separate.</li><li>Don’t lead and don’t pitch. Watch for social-desirability bias, especially with parents.</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">Interview six AIME families</p><p class="ex-d">Students and parents, in Malayalam, Tamil or English, recorded with consent. Synthesise into patterns, tensions and verbatim quotes.</p><p class="ex-m"><span>Output · Synthesis board</span><span>1 week</span></p></li><li><p class="ex-t">Audit five competitors</p><p class="ex-d">Five coaching institutes’ ads: claims, tone, visual codes. Plot them on two axes and find the empty space.</p><p class="ex-m"><span>Output · Competitor map</span><span>3 hrs</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when you’ve produced a synthesis a stranger could act on.</p></div>
+  </div>
+</section>
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t brand">B · Brand strategy</span><span class="pf-n">09</span></footer></div><div class="page ">
+<section class="mod t-brand">
+  <header class="mod-h">
+    <p class="code">B3</p>
+    <div class="mod-tt">
+      <h2>Insight <span class="star" title="Shared node">★ shared</span></h2>
+      <p class="why">This is the hinge between strategy and creative. A sharp insight makes your ideas (A1) sharper at the same time.</p>
+    </div>
+    <p class="deps"><span>Needs <b>B2</b></span><span>Unlocks <b>B4 · A1</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li>An observation is not an insight.</li><li>Insight = a truth + a <b>tension</b> + the reaction “huh, that’s true”.</li><li>Formula: <em>[Audience] wants [X], but [tension], because [deeper why].</em></li><li>Test every one: is it true, non-obvious, and something the brand can act on?</li><li>The best insights live in the <b>contradictions</b> in your research.</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">Write 20, keep 3</p><p class="ex-d">From the AIME interviews, write 20 candidate insights in the formula. Cut to 3 and test each against the three questions.</p><p class="ex-m"><span>Output · 3 insights</span><span>2 hrs</span></p></li><li><p class="ex-t">Daily reverse-engineering</p><p class="ex-d">For one ad you see each day, write the insight behind it in the formula. Five minutes.</p><p class="ex-m"><span>Output · Insight log</span><span>5 min/day</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when your insights make clients pause before they nod.</p></div>
+  </div>
+</section>
+<section class="mod t-brand">
+  <header class="mod-h">
+    <p class="code">B4</p>
+    <div class="mod-tt">
+      <h2>Positioning </h2>
+      <p class="why">Positioning is deciding what to give up. It applies to every client, and to Elswheir itself.</p>
+    </div>
+    <p class="deps"><span>Needs <b>B3</b></span><span>Unlocks <b>B5 · B7</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li><em>For</em> [target] <em>who</em> [need], [brand] <em>is the</em> [frame of reference] <em>that</em> [difference] <em>because</em> [proof].</li><li>Positioning is sacrifice: choosing <b>who you’re not for.</b></li><li>The frame of reference sets what you get compared against.</li><li>The difference must matter to the customer and be defensible.</li><li>Proof beats claims.</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">Position Elswheir</p><p class="ex-d">Write the statement, then a “we are not” list. For example: not an AI content mill, not a cheap reel factory.</p><p class="ex-m"><span>Output · Statement + not-list</span><span>1.5 hrs</span></p></li><li><p class="ex-t">Position AIME and the Dubai house</p><p class="ex-d">One statement each. For the couture house, map it against three other Dubai couture labels first.</p><p class="ex-m"><span>Output · 2 statements</span><span>2 hrs</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when each statement fits in one breath and excludes someone.</p></div>
+  </div>
+</section>
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t brand">B · Brand strategy</span><span class="pf-n">10</span></footer></div><div class="page ">
+<section class="mod t-brand">
+  <header class="mod-h">
+    <p class="code">B5</p>
+    <div class="mod-tt">
+      <h2>Brand platform </h2>
+      <p class="why">The platform is the single page that keeps every future asset consistent, including work that isn’t made by you.</p>
+    </div>
+    <p class="deps"><span>Needs <b>B4</b></span><span>Unlocks <b>B6</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li>Purpose: <b>only if it’s true.</b> No purpose is better than a fake one.</li><li>Write values as behaviours: “We show the cost before the work”, not “Transparency”.</li><li>Personality: three adjectives, each with a <em>“but not”</em> (bold, but not loud).</li><li>Messages: one core message, three supporting, proof for each.</li><li>If it doesn’t fit on one page, the choices haven’t been made yet.</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">Three platforms</p><p class="ex-d">One page each for AIME, Bodhini and Elswheir. Use “this, not that” pairs for personality and voice.</p><p class="ex-m"><span>Output · 3 pages</span><span>1 day</span></p></li><li><p class="ex-t">Pressure test</p><p class="ex-d">Give a platform to a freelancer with no other briefing. Does what they produce feel on-brand?</p><p class="ex-m"><span>Output · Test result</span><span>1 week</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when someone else can make on-brand work from your page alone.</p></div>
+  </div>
+</section>
+<section class="mod t-brand">
+  <header class="mod-h">
+    <p class="code">B6</p>
+    <div class="mod-tt">
+      <h2>Architecture &amp; naming </h2>
+      <p class="why">You have a live naming project right now. Set the criteria first and generate names second.</p>
+    </div>
+    <p class="deps"><span>Needs <b>B5</b></span><span>Unlocks <b>—</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li>Three architectures: branded house, house of brands, endorsed.</li><li>Name types: descriptive, invented, metaphor, founder, acronym.</li><li>Criteria: distinct, easy to say, ownable (trademark and domain), clean in every target language, room to grow.</li><li><b>Write the criteria before you generate names.</b></li><li>Test names out loud with people from the target market, not with friends.</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">Dragonfly agency names</p><p class="ex-d">Criteria first, including <em>must not read as India or MENA.</em> Generate 50, screen against the criteria, check trademark and domain, then test pronunciation with 5 people in the target markets.</p><p class="ex-m"><span>Output · Shortlist of 3</span><span>1 week</span></p></li><li><p class="ex-t">Map AIME × Arcane</p><p class="ex-d">Is Arcane a sub-brand, endorsed, or separate? Draw it, and write the rule for when the AIME name appears.</p><p class="ex-m"><span>Output · Architecture map</span><span>1 hr</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when the shortlist passes every criterion on paper.</p></div>
+  </div>
+</section>
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t brand">B · Brand strategy</span><span class="pf-n">11</span></footer></div><div class="page ">
+<section class="mod t-brand">
+  <header class="mod-h">
+    <p class="code">B7</p>
+    <div class="mod-tt">
+      <h2>The creative brief <span class="star" title="Shared node">★ shared</span></h2>
+      <p class="why">The brief is where strategy turns into creative work. Writing better briefs also makes you a better director (A1, A2).</p>
+    </div>
+    <p class="deps"><span>Needs <b>B4 · R1</b></span><span>Unlocks <b>A1 · A2</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li>One page, always.</li><li>Single-minded proposition = <b>one thing.</b> Not two.</li><li>A brief is a <em>springboard, not a fence.</em></li><li>If you can’t say it in one line, the strategy isn’t finished.</li><li>Always include what success looks like: a metric.</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">Rewrite one brief</p><p class="ex-d">Rewrite the next AIME or C0C0N brief on one page. Hand it to a partner and count the revision rounds.</p><p class="ex-m"><span>Output · Brief + count</span><span>1.5 hrs</span></p></li><li><p class="ex-t">The stranger test</p><p class="ex-d">Give a brief to someone with no context. Can they explain the job back to you in 30 seconds?</p><p class="ex-m"><span>Output · Pass / fail</span><span>15 min</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when your briefs average two revision rounds or fewer.</p></div>
+  </div>
+</section>
+<section class="mod t-brand">
+  <header class="mod-h">
+    <p class="code">B8</p>
+    <div class="mod-tt">
+      <h2>Growth &amp; effectiveness </h2>
+      <p class="why">This is how you prove your work moves the business, and it’s what justifies value-based pricing.</p>
+    </div>
+    <p class="deps"><span>Needs <b>C1</b></span><span>Unlocks <b>B9</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li>Brands grow mainly by reaching <b>more buyers,</b> including light buyers (Sharp).</li><li>Build mental availability (easy to think of) and physical availability (easy to buy).</li><li>Distinctive assets such as colours, characters and sounds only work if you keep them <em>consistent.</em></li><li>Balance long-term brand building with short-term activation. Binet &amp; Field’s ~60:40 is an average that varies by category. <i>From memory.</i></li><li>Agree the metrics <b>before</b> the work starts.</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">Set AIME’s metrics</p><p class="ex-d">Before the next campaign, agree on three: enquiries, cost per enquiry, enrolments. Build a simple tracker you both see.</p><p class="ex-m"><span>Output · Metric sheet</span><span>1 hr</span></p></li><li><p class="ex-t">Audit Bodhini’s assets</p><p class="ex-d">What is consistent across every touchpoint? What keeps changing? Recommend the 2–3 assets to lock in.</p><p class="ex-m"><span>Output · Asset audit</span><span>2 hrs</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when every active client has agreed metrics on paper.</p></div>
+  </div>
+</section>
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t brand">B · Brand strategy</span><span class="pf-n">12</span></footer></div><div class="page ">
+<section class="mod t-brand">
+  <header class="mod-h">
+    <p class="code">B9</p>
+    <div class="mod-tt">
+      <h2>Case-study writing <span class="star" title="Shared node">★ shared</span></h2>
+      <p class="why">Case studies are the proof for all three tracks. They are what your next client, partner or investor will judge you on.</p>
+    </div>
+    <p class="deps"><span>Needs <b>B8</b></span><span>Unlocks <b>Proof</b></span></p>
+  </header>
+  <div class="mod-b">
+    <div class="mem"><h3>Memorise</h3><ol><li>Structure: problem → insight → idea → execution → <b>results</b> → learning.</li><li><em>Numbers, or it didn’t happen.</em></li><li>A short client quote adds trust that design can’t.</li><li>Write for the client you want next, not the one you had.</li><li>Check the NDA before naming anyone.</li></ol></div>
+    <div class="apply"><h3>Apply</h3><ol><li><p class="ex-t">The AIME case</p><p class="ex-d">Done by Q3. One page plus a 60-second film cut. Get the enrolment and enquiry numbers from AIME in writing.</p><p class="ex-m"><span>Output · Case study</span><span>1 day</span></p></li><li><p class="ex-t">The Dubai case</p><p class="ex-d">Ask permission early. If you can’t name them, write an anonymised version with the numbers kept.</p><p class="ex-m"><span>Output · Case study</span><span>1 day</span></p></li></ol>
+      <p class="done"><span class="box"></span>Done when you have two cases with numbers you can send without explanation.</p></div>
+  </div>
+</section>
+<div class="formulas"><h3 class="sh">Strategy formulas: learn them by heart</h3>
+<dl>
+ <dt>Insight</dt><dd>[Audience] wants [X], but [tension], because [deeper why].</dd>
+ <dt>Positioning</dt><dd>For [target] who [need], [brand] is the [frame] that [difference] because [proof].</dd>
+ <dt>Proposition</dt><dd>One thing. If it has an “and”, cut it in half.</dd>
+ <dt>Personality</dt><dd>Adjective, but not [its excess]. ×3.</dd>
+ <dt>Case study</dt><dd>Problem → insight → idea → execution → results → learning.</dd>
+ <dt>Funnel</dt><dd>Awareness → enquiry → conversion → retention → referral. Work on the constraint.</dd>
+ <dt>Interview opener</dt><dd>“Tell me about the last time you…”</dd>
+</dl></div>
+<div class="psy"><h3 class="sh">Your unfair edge: psychology you already own, mapped to the work</h3>
+<table>
+ <tr><td class="pn">Anchoring</td><td>The first number sets the frame. Show the top tier first.</td><td class="pm">C3</td></tr>
+ <tr><td class="pn">Loss aversion</td><td>Frame the cost of inaction (empty seats, missed season) before your price.</td><td class="pm">C5</td></tr>
+ <tr><td class="pn">Social desirability</td><td>Parents say what sounds right. Ask what they <em>did.</em></td><td class="pm">B2</td></tr>
+ <tr><td class="pn">Availability heuristic</td><td>What comes to mind first gets chosen. That is mental availability.</td><td class="pm">B8</td></tr>
+ <tr><td class="pn">Social proof</td><td>Case studies and named results do the selling for you.</td><td class="pm">B9</td></tr>
+ <tr><td class="pn">Confirmation bias</td><td>Yours. Look for the interview that breaks your favourite insight.</td><td class="pm">B3 · C7</td></tr>
+ <tr><td class="pn">Planning fallacy</td><td>Yours too. Add 50% to time and cost estimates by default.</td><td class="pm">C7</td></tr>
+</table></div>
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t brand">B · Brand strategy</span><span class="pf-n">13</span></footer></div><div class="page "><div class="trk cd"><p class="trk-n">Track A · Creative direction</p><p class="trk-s">You already have the craft. These are the unglamorous skills that separate a senior CD from a strong artist. Rate yourself 1–5 on each and work on anything 3 or below.</p></div><ol class="cdl"><li><p class="cd-c">A1</p><div><p class="cd-n">Idea vs execution</p><p class="cd-m">If it can’t be said in one sentence, <em>it isn’t an idea yet.</em></p></div><div><p class="cd-e"><b>Apply</b> Before any frames for Els Prophecy or C0C0N, write the idea as one line. Keep the line pinned above the edit timeline.</p><p class="cd-d">Needs B3 · B7</p></div><span class="box"></span></li><li><p class="cd-c">A2</p><div><p class="cd-n">Briefing others</p><p class="cd-m">Revision rounds measure <em>your brief,</em> not their talent.</p></div><div><p class="cd-e"><b>Apply</b> Track revisions per brief and aim for two or fewer. Keep a reusable prompt-brief template for Nano Banana via Higgsfield.</p><p class="cd-d">Needs B7</p></div><span class="box"></span></li><li><p class="cd-c">A3</p><div><p class="cd-n">Feedback language</p><p class="cd-m">Name the problem and the goal. <em>Let them find the fix.</em></p></div><div><p class="cd-e"><b>Apply</b> Rewrite your last 10 feedback notes as “X doesn’t yet feel Y, because Z.”</p></div><span class="box"></span></li><li><p class="cd-c">A4</p><div><p class="cd-n">Killing work</p><p class="cd-m">Your loyalty is to the brief, <em>not the frame.</em></p></div><div><p class="cd-e"><b>Apply</b> Log one thing you cut per project and why. Review the log quarterly.</p></div><span class="box"></span></li><li><p class="cd-c">A5</p><div><p class="cd-n">Selling the work</p><p class="cd-m">Problem → insight → idea → execution. <em>Never open with visuals.</em></p></div><div><p class="cd-e"><b>Apply</b> Before every presentation, write the three objections you expect. Afterwards, note which ones actually came up.</p><p class="cd-d">Needs C3 · C5</p></div><span class="box"></span></li><li><p class="cd-c">A6</p><div><p class="cd-n">Production economics</p><p class="cd-m">Know your <em>cost per finished second.</em></p></div><div><p class="cd-e"><b>Apply</b> Keep a cost log per project: hours, credits, vendors, revisions. Compare it with the quote.</p><p class="cd-d">Needs C2</p></div><span class="box"></span></li><li><p class="cd-c">A7</p><div><p class="cd-n">Systems &amp; guidelines</p><p class="cd-m">Work nobody else can extend <em>stops growing when you step away.</em></p></div><div><p class="cd-e"><b>Apply</b> Ship a two-page mini guideline with every identity or campaign project.</p></div><span class="box"></span></li><li><p class="cd-c">A8</p><div><p class="cd-n">Rights &amp; legal</p><p class="cd-m">Price usage separately: <em>medium, territory, term.</em></p></div><div><p class="cd-e"><b>Apply</b> Add a rights clause to every quote. Ask a lawyer about AI-output copyright in India, music and font licences, and talent releases.</p><p class="cd-d">Needs C6</p></div><span class="box"></span></li><li><p class="cd-c">A9</p><div><p class="cd-n">Taste calibration</p><p class="cd-m">Taste is <em>judgement you can put into words.</em></p></div><div><p class="cd-e"><b>Apply</b> Every day, write 5 lines on one piece of award-winning work: insight, idea, craft choice, the emotion it targets, and the bias it uses.</p><p class="cd-d">Needs R2</p></div><span class="box"></span></li></ol>
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t cd">A · Creative direction</span><span class="pf-n">14</span></footer></div><div class="page ">
+<h1 class="ph">Twelve months, <em>four proofs</em></h1>
+<p class="lede">Each quarter ends with something you can show. If a quarter slips, move the dates, but don’t skip the proof.</p>
+<table class="road">
+ <tr><th></th><th class="biz">Business</th><th class="brand">Strategy</th><th class="cd">Creative direction</th><th>Proof by quarter end</th></tr>
+ <tr><td class="q">Q1<small>Nov–Jan</small></td><td>C1, C4. Money review habit. CA session on GST, TDS and the tax regime.</td><td>B1–B3. AIME diagnosis, interviews, insight.</td><td>Brief template. Feedback rewrite.</td><td><b>3 monthly P&amp;Ls. AIME research synthesis.</b></td></tr>
+ <tr><td class="q">Q2<small>Feb–Apr</small></td><td>C2, C3. Unit economics. Pricing reset on new proposals.</td><td>B4–B5. Positioning and platforms for AIME, Bodhini and Elswheir.</td><td>Selling the work. Three-objection drill.</td><td><b>3 platforms. New pricing used on 3+ proposals.</b></td></tr>
+ <tr><td class="q">Q3<small>May–Jul</small></td><td>C5, C6. Sales log. Master contract from a lawyer.</td><td>B6–B7. Dragonfly naming. One-page briefs.</td><td>Cost log. Rights clauses.</td><td><b>Signed master contract. AIME case study.</b></td></tr>
+ <tr><td class="q">Q4<small>Aug–Oct</small></td><td>C7. Quarterly reviews. Pre-mortems on big bets.</td><td>B8–B9. Effectiveness metrics. Case writing.</td><td>50+ taste breakdowns.</td><td><b>2 case studies. Annual review of revenue, margin, concentration, win rate.</b></td></tr>
+</table>
+
+<h3 class="sh" style="margin-top:10mm">Reading: one book at a time, only alongside its skill</h3>
+<div class="read">
+ <div class="biz"><p class="rh">Business</p><p><i>The Personal MBA</i>, Kaufman · C1–C7</p><p><i>Financial Intelligence for Entrepreneurs</i>, Berman &amp; Knight · C1</p><p><i>Profit First</i>, Michalowicz · C4</p><p><i>The Win Without Pitching Manifesto</i>, Enns · C3</p><p><i>Never Split the Difference</i>, Voss · C5</p><p><i>Thinking in Bets</i>, Duke · C7</p></div>
+ <div class="brand"><p class="rh">Strategy</p><p><i>Strategy Is Your Words</i>, Pollard · B3–B7</p><p><i>How Brands Grow</i>, Sharp · B8</p><p><i>The Long and the Short of It</i>, Binet &amp; Field · B8</p><p><i>Positioning</i>, Ries &amp; Trout · B4</p><p><i>Zag</i>, Neumeier · B4</p><p>Effie India, WARC and IPA cases · B9</p></div>
+ <div class="cd"><p class="rh">Creative direction</p><p><i>Hey Whipple, Squeeze This</i>, Sullivan · A1–A5</p><p><i>A Technique for Producing Ideas</i>, Young · A1</p><p>Cannes Lions, D&amp;AD and One Show case films · A9</p></div>
+</div>
+<p class="fine">Titles are recommended from memory. Check editions and availability.</p>
+
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t ">Plan</span><span class="pf-n">15</span></footer></div><div class="page ">
+<h1 class="ph">Templates <em>to copy</em></h1>
+<div class="tpl">
+ <h3 class="sh">Decision journal: one per decision over ₹50,000 or longer than 3 months</h3>
+ <div class="frm">
+  <p><b>Date</b><span class="ln"></span></p><p><b>Decision</b><span class="ln"></span></p>
+  <p><b>Options considered</b><span class="ln"></span><span class="ln"></span></p>
+  <p><b>What I expect will happen</b><span class="ln"></span><span class="ln"></span></p>
+  <p class="row3"><span><b>Confidence</b> ____ %</span><span><b>One-way or two-way door?</b></span><span><b>Review on</b> ________</span></p>
+  <p><b>What actually happened</b><span class="ln"></span><span class="ln"></span></p>
+  <p><b>Rule learned</b><span class="ln"></span></p>
+ </div>
+</div>
+<div class="tpl">
+ <h3 class="sh">Pre-mortem: “It’s 12 months later and this failed. Why?”</h3>
+ <div class="frm">
+  <p><b>The bet</b><span class="ln"></span></p>
+  <p><b>Ten reasons it failed</b><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span><span class="ln"></span></p>
+  <p><b>Top 3, ranked by likelihood × damage</b><span class="ln"></span><span class="ln"></span></p>
+  <p><b>Cheapest test of the riskiest assumption</b><span class="ln"></span></p>
+ </div>
+</div>
+
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t ">Tools</span><span class="pf-n">16</span></footer></div><div class="page ">
+<div class="tpl">
+ <h3 class="sh">Monthly money review: first Monday, one hour</h3>
+ <table class="mr">
+  <tr><td>Revenue this month</td><td></td><td>Cash in bank</td><td></td></tr>
+  <tr><td>Direct costs</td><td></td><td>Owed to me (total)</td><td></td></tr>
+  <tr><td>Gross margin %</td><td></td><td>Oldest unpaid invoice (days)</td><td></td></tr>
+  <tr><td>Fixed costs + my salary</td><td></td><td>Committed costs, next 3 months</td><td></td></tr>
+  <tr><td>Profit</td><td></td><td>Runway (months)</td><td></td></tr>
+  <tr><td>Top client share %</td><td></td><td>Tax &amp; GST account balance</td><td></td></tr>
+ </table>
+ <p class="frm-q"><b>One thing to change next month</b><span class="ln"></span></p>
+</div>
+<div class="tpl">
+ <h3 class="sh">Quarterly scorecard: rate 1–5</h3>
+ <table class="sc">
+  <tr><th>Skill</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th></tr>
+  <tr><td>I know my monthly numbers from memory</td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>Receivables under one month of revenue</td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>Price set on value; walk-away number defined</td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>Top client under 40% of revenue</td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>I write a one-page brief a stranger can use</td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>I build brand platforms from real research</td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>I state the idea in one sentence before visuals</td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>I present problem → insight → idea → execution</td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>Decision journal kept and reviewed monthly</td><td></td><td></td><td></td><td></td></tr>
+  <tr class="key"><td>Case studies with numbers (count)</td><td></td><td></td><td></td><td></td></tr>
+ </table>
+ <p class="fine">The last row matters most. Clients, partners and your own confidence all rest on it.</p>
+</div>
+
+  <footer class="pf"><span class="pf-l"><span class="logo"><span class="l1">Els</span><span class="l2">wheir</span></span></span><span class="pf-t ">Tools</span><span class="pf-n">17</span></footer></div>
+</body></html>
