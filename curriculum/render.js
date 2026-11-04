@@ -18,7 +18,7 @@ const path = require('path');
   console.log(JSON.stringify(report));
   const fonts = await page.evaluate(() => [...document.fonts].filter(f => f.status === 'loaded').map(f => f.family + ' ' + f.weight + ' ' + f.style));
   console.log('fonts loaded:', [...new Set(fonts)].join(' | '));
-  await page.pdf({ path: path.join(dir, 'Elswheir-Operators-Curriculum.pdf'), format: 'A4', printBackground: true, preferCSSPageSize: true });
+  await page.pdf({ path: path.join(dir, 'akitsuu-Operators-Curriculum.pdf'), format: 'A4', printBackground: true, preferCSSPageSize: true });
   if (process.argv[2] === 'shots') {
     const n = report.length;
     for (let i = 0; i < n; i++) {
