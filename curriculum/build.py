@@ -35,6 +35,10 @@ def module(m):
     if m["unlocks"] not in ("—", ""):
         chips.append(f'<span class="chip">Leads to {m["unlocks"]}</span>')
     fig_fn, caption = FIGS[m["code"]]
+    pl = plate(m["code"])
+    fig_svg = fig_fn()
+    if pl:  # the plate carries this page's one red; the diagram drops to brown
+        fig_svg = fig_svg.replace("var(--red)", "var(--brown)")
     mem = "".join(f"<li>{x}</li>" for x in m["mem"])
     ex = "".join(
         f'<li><p class="ex-t">{t}</p><p class="ex-d">{d}</p><p class="ex-m"><span>Output · {o}</span><span>{tm}</span></p></li>'
@@ -46,13 +50,13 @@ def module(m):
   <p class="code">{m['code']}</p>
   <div class="mod-tt"><h2>{m['title']}</h2><p class="why">{m['why']}</p></div>
 </header>
-<figure class="fig">{fig_fn()}<figcaption><b>See it.</b> {caption}</figcaption></figure>
+<figure class="fig">{fig_svg}<figcaption><b>See it.</b> {caption}</figcaption></figure>
 <div class="mod-b">
   <div class="mem"><h3>Memorise</h3><ol>{mem}</ol></div>
   <div class="apply"><h3>Apply</h3><ol>{ex}</ol>
     <p class="done"><span class="box"></span>Done when {m['done']}</p></div>
 </div>
-{plate(m['code'])}
+{pl}
 <div class="recall"><p class="cap">Test yourself<br>tomorrow</p>
   <p class="q">{q1}<span></span></p><p class="q">{q2}<span></span></p></div>"""
 
